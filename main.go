@@ -11,9 +11,7 @@ import (
 	redis "github.com/segmentio/redis-go"
 )
 
-// Main validates any relevant env vars and creates a new proxy instance.
-// - It might be useful to have a cache (and redis) interface. Mainly for the
-// cache so we can swap in different implementations.
+// Main validates any relevant env vars, starts up any dependencies, and creates a new proxy instance.
 func main() {
 	// Start up the cache and redis pool.
 	cache := cache.New(EnvOrDefaultInt("CACHE_CAPACITY", 100), EnvOrDefaultInt("CACHE_TTTL", 300))

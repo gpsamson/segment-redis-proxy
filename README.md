@@ -7,14 +7,15 @@ using either HTTP or [RESP](https://redis.io/topics/protocol) to communicate wit
 clients.
 
 ## HTTP Usage
-Once you set the environment variable, `PROTOCOL` to `HTTP` you can send a `GET` request from to the proxy (assuming the `gabriel` key is set):
+Once you set the environment variable, `PROTOCOL`, to `HTTP` you can send a `GET` request from to the proxy (assuming the `gabriel` key is set):
 ```
 curl -X GET http://localhost:8080/gabriel
 ```
 
 ## RESP Usage
-Similarly, once you set the environment variable, `PROTOCOL` to `RESP` you can connect to the proxy using `redis-cli` (assuming the `gabriel` key is set):
+Similarly, once you set the environment variable, `PROTOCOL`, to `RESP` you can connect to the proxy using `redis-cli` (assuming the `gabriel` key is set):
 ```
+$ redis-cli -p 8080
 127.0.0.1:8080> GET gabriel
 "samson"
 127.0.0.1:8080> SET gabe samson
@@ -23,14 +24,14 @@ Similarly, once you set the environment variable, `PROTOCOL` to `RESP` you can c
 ```
 
 ## Architecture
-- **Proxy** - The proxy component is responsible for handling GET requests using read-through mechanisms - tying together the cache and Redis components. The proxy has two variations: the HTTP proxy and the RESP proxy. These two variations differ by communication protocol but still have the same functionality. At start time, the proxy variation is selected based on the coniguratio.
-- **Cache** - The cache component is a fized-size thread safe LRU cache with a global time-to-live. This implementation is based on the [groupcache](https://github.com/golang/groupcache/blob/master/lru/lru.go) package.
+- **Proxy** - The proxy component is responsible for handling GET requests using read-through mechanisms - tying together the cache and Redis components. The proxy has two variations: the HTTP proxy and the RESP proxy. These two variations differ by communication protocol but still have the same functionality. At start time, the proxy variation is selected based on the coniguration.
+- **Cache** - The cache component is a fixed-size thread safe LRU cache with a global time-to-live. This implementation is based on the [groupcache](https://github.com/golang/groupcache/blob/master/lru/lru.go) package.
 - **Redis** - The Redis component is exactly that, Redis. This also includes the client packages needed to communicate with the backing instance.
 
 ## Configuration
 Environment Variables:
 - `PORT`: The port the proxy should listen on. (default: `8080`)
-- `PROTOCOL`: The communication protocol to use when listening to clients One of: `RESP` or `HTTP`. (default: `HTTP`)
+- `PROTOCOL`: The communication protocol to use when listening to clients. One of: `RESP` or `HTTP`. (default: `HTTP`)
 - `REDIS_ADDR`: The server address of the backing Redis instance. (default: `localhost:8080`)
 - `CACHE_CAPACITY`: Maximum number of items the cache should retain. (default: `100`)
 - `CACHE_TTL`: Maximum number of seconds an item should be retained in the cache before being evicted. (default: `300`)
@@ -47,7 +48,7 @@ To build a production-ready image use:
 ```
 $ make container-image
 ```
-Container images are named `gpsamson/segment-redis-proxy` by default, and they are tagged with the hash of the current cmmit. You can override these using `IMAGE` and `TAG` environment variables.
+Container images are named `gpsamson/segment-redis-proxy` by default, and they are tagged with the hash of the current commit. You can override these using `IMAGE` and `TAG` environment variables.
 ## Algorithmic Complexity
 Cache operation complexities:
 - `Get()` - time complexity of `O(1)`
