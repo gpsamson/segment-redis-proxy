@@ -6,6 +6,22 @@ The service supports **only** the [GET](https://redis.io/commands/get) command
 using either HTTP or [RESP](https://redis.io/topics/protocol) to communicate with
 clients.
 
+## HTTP Usage
+Once you set the environment variable, `PROTOCOL` to `HTTP` you can send a `GET` request from to the proxy (assuming the `gabriel` key is set):
+```
+curl -X GET http://localhost:8080/gabriel
+```
+
+## RESP Usage
+Similarly, once you set the environment variable, `PROTOCOL` to `RESP` you can connect to the proxy using `redis-cli` (assuming the `gabriel` key is set):
+```
+127.0.0.1:8080> GET gabriel
+"samson"
+127.0.0.1:8080> SET gabe samson
+(error) ERR unsupported command 'SET'
+127.0.0.1:8080>
+```
+
 ## Architecture
 - **Proxy** - The proxy component is responsible for handling GET requests using read-through mechanisms - tying together the cache and Redis components. The proxy has two variations: the HTTP proxy and the RESP proxy. These two variations differ by communication protocol but still have the same functionality. At start time, the proxy variation is selected based on the coniguratio.
 - **Cache** - The cache component is a fized-size thread safe LRU cache with a global time-to-live. This implementation is based on the [groupcache](https://github.com/golang/groupcache/blob/master/lru/lru.go) package.
