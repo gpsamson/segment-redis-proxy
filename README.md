@@ -44,6 +44,12 @@ You can run the service locally using Docker Compose:
 $ docker-compose up
 ```
 
+You can run the service tests using:
+```
+$ make test
+```
+*Testing requires a redis instance running on the address localhost:6379. The redis service in docker compose automatically bind itself to port 6379.`*
+
 To build a production-ready image use:
 ```
 $ make container-image
